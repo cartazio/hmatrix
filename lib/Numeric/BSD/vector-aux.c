@@ -1,4 +1,7 @@
 #include <gsl/gsl_complex.h>
+#include <complex.h>
+
+
 
 #define RVEC(A) int A##n, double*A##p
 #define RMAT(A) int A##r, int A##c, double* A##p
@@ -35,6 +38,25 @@
 // #include <gsl/gsl_multifit_nlin.h>
 #include <string.h>
 #include <stdio.h>
+
+
+typedef struct
+  {
+    long double dat[2];
+  }
+bsd_complex_long_double;
+
+typedef struct
+  {
+    double dat[2];
+  }
+bsd_complex;
+
+typedef struct
+  {
+    float dat[2];
+  }
+bsd_complex_float;
 
 #define MACRO(B) do {B} while (0)
 #define ERROR(CODE) MACRO(return CODE;)
