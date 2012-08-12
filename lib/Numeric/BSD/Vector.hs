@@ -12,7 +12,7 @@
 --
 -----------------------------------------------------------------------------
 
-module Numeric.GSL.Vector (
+module Numeric.BSD.Vector (
     sumF, sumR, sumQ, sumC,
     prodF, prodR, prodQ, prodC,
     dotF, dotR, dotQ, dotC,

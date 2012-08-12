@@ -40,7 +40,7 @@ opts = [ ""                              -- Ubuntu/Debian
 
 -- compile a simple program with symbols from GSL and LAPACK with the given libs
 testprog bInfo buildInfo libs fmks =
-    "echo \"#include <gsl/gsl_sf_gamma.h>\nint main(){dgemm_(); zgesvd_(); gsl_sf_gamma(5);}\""
+    "echo \"#include <gsl/gsl_sf_gamma.h>\nint main(){dgemm_(); zgesvd_();}\""
                      ++" > " ++ (buildDir bInfo) ++ "/dummy.c; gcc "
                      ++ (join $ ccOptions buildInfo) ++ " "
                      ++ (join $ cppOptions buildInfo) ++ " "
@@ -56,7 +56,7 @@ prepend x = unwords . map (x++) . words
 
 check bInfo buildInfo libs fmks = (ExitSuccess ==) `fmap` system (testprog bInfo buildInfo libs fmks)
 
--- simple test for GSL
+ {-simple test for GSL-}
 gsl bInfo buildInfo = "echo \"#include <gsl/gsl_sf_gamma.h>\nint main(){gsl_sf_gamma(5);}\""
            ++" > " ++ (buildDir bInfo) ++ "/dummy.c; gcc "
            ++ (join $ ccOptions buildInfo) ++ " "
@@ -67,7 +67,7 @@ gsl bInfo buildInfo = "echo \"#include <gsl/gsl_sf_gamma.h>\nint main(){gsl_sf_g
            ++ (join $ map ("-L"++) $ extraLibDirs buildInfo) ++ " -lgsl -lgslcblas"
            ++ " > /dev/null 2> /dev/null"
 
--- test for gsl >= 1.12
+ {-test for gsl >= 1.12-}
 gsl112 bInfo buildInfo =
     "echo \"#include <gsl/gsl_sf_exp.h>\nint main(){gsl_sf_exprel_n_CF_e(1,1,0);}\""
            ++" > " ++ (buildDir bInfo) ++ "/dummy.c; gcc " 
@@ -79,17 +79,17 @@ gsl112 bInfo buildInfo =
            ++ (join $ map ("-L"++) $ extraLibDirs buildInfo) ++ " -lgsl -lgslcblas"
            ++ " > /dev/null 2> /dev/null"
 
--- test for odeiv2
-gslodeiv2 bInfo buildInfo =
-    "echo \"#include <gsl/gsl_odeiv2.h>\nint main(){return 0;}\""
-           ++" > " ++ (buildDir bInfo) ++ "/dummy.c; gcc " 
-           ++ (buildDir bInfo) ++ "/dummy.c "
-           ++ (join $ ccOptions buildInfo) ++ " "
-           ++ (join $ cppOptions buildInfo) ++ " "
-           ++ (join $ map ("-I"++) $ includeDirs buildInfo)
-           ++" -o " ++ (buildDir bInfo) ++ "/dummy "
-           ++ (join $ map ("-L"++) $ extraLibDirs buildInfo) ++ " -lgsl -lgslcblas"
-           ++ " > /dev/null 2> /dev/null"
+---- test for odeiv2
+--gslodeiv2 bInfo buildInfo =
+--    "echo \"#include <gsl/gsl_odeiv2.h>\nint main(){return 0;}\""
+--           ++" > " ++ (buildDir bInfo) ++ "/dummy.c; gcc " 
+--           ++ (buildDir bInfo) ++ "/dummy.c "
+--           ++ (join $ ccOptions buildInfo) ++ " "
+--           ++ (join $ cppOptions buildInfo) ++ " "
+--           ++ (join $ map ("-I"++) $ includeDirs buildInfo)
+--           ++" -o " ++ (buildDir bInfo) ++ "/dummy "
+--           ++ (join $ map ("-L"++) $ extraLibDirs buildInfo) ++ " -lgsl -lgslcblas"
+--           ++ " > /dev/null 2> /dev/null"
 
 
 checkCommand c = (ExitSuccess ==) `fmap` system c
@@ -124,7 +124,7 @@ config bInfo = do
     -- and from a posible --configure-option=link:lib1,lib2,lib3
     -- by default the desired libs are gsl lapack.
 
-    let pref = if null (words (base ++ " " ++ auxpref)) then "gsl lapack" else auxpref
+    let pref = if null (words (base ++ " " ++ auxpref)) then "lapack" else auxpref
         fullOpts = map ((pref++" ")++) opts
 
     -- create the build directory (used for tmp files) if necessary
@@ -135,10 +135,10 @@ config bInfo = do
     case r of
         Nothing -> do
             putStrLn " FAIL"
-            g  <- checkCommand $ gsl bInfo buildInfo
-            if g
-                then putStrLn " *** Sorry, I can't link LAPACK."
-                else putStrLn " *** Sorry, I can't link GSL."
+            --g  <- checkCommand $ gsl bInfo buildInfo
+            --if g
+            --    then putStrLn " *** Sorry, I can't link LAPACK."
+            --    else putStrLn " *** Sorry, I can't link GSL."
             putStrLn " *** Please make sure that the appropriate -dev packages are installed."
             putStrLn " *** You can also specify the required libraries using"
             putStrLn " *** cabal install hmatrix --configure-option=link:lib1,lib2,lib3,etc."            
@@ -147,9 +147,9 @@ config bInfo = do
             putStrLn $ " OK " ++ ops
             g1 <- checkCommand $ gsl112 bInfo buildInfo
             let op1 = if g1 then "" else "-DGSL110"
-            g2 <- checkCommand $ gslodeiv2 bInfo buildInfo
-            let op2 = if g2 then "" else "-DGSLODE1"
-                opts = filter (not.null) [op1,op2]
+            --g2 <- checkCommand $ gslodeiv2 bInfo buildInfo
+            --let op2 = if g2 then "" else "-DGSLODE1"
+                opts = filter (not.null) [op1]
             let hbi = emptyBuildInfo { extraLibs = words ops, ccOptions = opts }
             return (Just hbi, [])
 

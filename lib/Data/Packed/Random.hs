@@ -19,7 +19,7 @@ module Data.Packed.Random (
     meanCov,
 ) where
 
-import Numeric.GSL.Vector
+import Numeric.BSD.Vector
 import Data.Packed
 import Numeric.ContainerBoot
 import Numeric.LinearAlgebra.Algorithms

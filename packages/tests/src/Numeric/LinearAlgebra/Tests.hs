@@ -32,7 +32,7 @@ import Numeric.LinearAlgebra.Tests.Properties
 import Test.HUnit hiding ((~:),test,Testable,State)
 import System.Info
 import Data.List(foldl1')
-import Numeric.GSL
+--import Numeric.GSL
 import Prelude hiding ((^))
 import qualified Prelude
 import System.CPUTime
